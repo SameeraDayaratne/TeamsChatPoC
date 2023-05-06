@@ -197,6 +197,18 @@
 			background-color: #ffe6d1;
 			align-self: flex-start;
 		}
+
+		.butnew{
+			background-color: #3b5998;
+			color: #fff;
+			border: none;
+			padding: 10px 20px;
+			border-radius: 20px;
+			font-size: 16px;
+			cursor: pointer;
+		}
+
+		}
 	</style>
 </head>
 <body>
@@ -207,7 +219,7 @@
 			<div class="chat-header">
 				<div>Vithushan Sylvestor</div>				
 			</div>
-			<div class="chat-messages">
+			<div class="chat-messages" id="chat-messages-container">
 				@foreach (var item in Enumerable.Reverse(Model.messageList))
 				{
 					if(item.Sender == "Outgoing")
@@ -226,13 +238,9 @@
 				<form method="post">
 					<div class="message-input">
 						<input type="text" name="message" placeholder="Type your message here...">
-						<button type="button" name="sendButton" onclick="sendMessage('@Model.accessToken')">Send</button>
+						<button class="butnew" type="button" name="sendButton" onclick="sendMessage('@Model.accessToken')">Send</button>
 					</div>
 				</form>
-
-				<div class="message-output">
-					<!-- The server-generated message content goes here -->
-				</div>
 			</div>
 		</div>
 	</body>

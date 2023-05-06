@@ -1,20 +1,7 @@
-﻿function sendMessages() {
-  var message = document.getElementsByName("message")[0].value;
-  var xhttp = new XMLHttpRequest();
- 
-  xhttp.open("GET", "https://catfact.ninja/fact", true);
-  xhttp.send();
+﻿var chatMessagesContainer = document.getElementById('chat-messages-container');
 
-  xhttp.onload = () => {
-    if(xhttp.status === 200)
-    {
-        let data = xhttp.responseText;
-        console.log(data);
-
-    }
-
-}
-}
+// Set the scroll position to the bottom of the container
+chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
 
 function sendMessage(accessTokenValue) {
   var message = document.getElementsByName("message")[0].value;
@@ -36,7 +23,17 @@ const xhttp = new XMLHttpRequest();
 
         xhttp.onload = function() {
           if (xhttp.status === 201) {
+            var chatWindow = document.querySelector(".chat-messages");
+              var newMessage = document.createElement("div");
+              newMessage.className = "chat-message outgoing";
+              newMessage.textContent = message;
+              chatWindow.appendChild(newMessage);
+            chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+            document.getElementsByName("message")[0].value = "";
+
             console.log("Message sent successfully!");
+
+
           } else {
             console.log("Failed to send message:", xhttp.statusText);
           }

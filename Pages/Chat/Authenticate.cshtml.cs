@@ -135,7 +135,7 @@ namespace ChatTeams.Pages.Chat
 
         }
 
-    public void OnPost()
+ /*   public void OnPost()
     {
             string message = Request.Form["message"];
             string sendButton = Request.Form["sendButton"];
@@ -146,7 +146,7 @@ namespace ChatTeams.Pages.Chat
             }
 
 
-        }
+        }*/
     public AccessTokenResponse Authenticate()
         {
             string MicrosoftGraphApiBaseUrl = "https://graph.microsoft.com";
