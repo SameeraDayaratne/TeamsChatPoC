@@ -1,6 +1,7 @@
 ﻿@page
 @model ChatTeams.Pages.Chat.AuthenticateModel
 @{
+
 }
 @*<!DOCTYPE html>
 <html>
@@ -103,6 +104,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+
+
 	<title>Facebook-style Chat Window</title>
 	<style>
 		body {
@@ -198,10 +201,11 @@
 </head>
 <body>
 	<body>
+
+
 		<div class="chat-window">
 			<div class="chat-header">
-				<div>Chat with Friends</div>
-				<div>Close</div>
+				<div>Vithushan Sylvestor</div>				
 			</div>
 			<div class="chat-messages">
 				@foreach (var item in Enumerable.Reverse(Model.messageList))
@@ -218,10 +222,28 @@
 				
 				
 			</div>
-			<div class="message-input">
-				<input type="text" placeholder="Type your message here...">
-				<button type="submit">Send</button>
+			<div id="chat">
+				<form method="post">
+					<div class="message-input">
+						<input type="text" name="message" placeholder="Type your message here...">
+						<button type="button" name="sendButton" onclick="sendMessage('@Model.accessToken')">Send</button>
+					</div>
+				</form>
+
+				<div class="message-output">
+					<!-- The server-generated message content goes here -->
+				</div>
 			</div>
 		</div>
 	</body>
 </body>
+
+@section Scripts {
+	<script type="text/javascript" src="~/js/SendMessage.js"></script>
+}
+
+
+
+
+
+

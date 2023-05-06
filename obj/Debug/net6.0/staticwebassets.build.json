@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "hehjCF7allfNuJMkSP3OZakqHU2JdXUZRKQmfN/MM80=",
+  "Hash": "k+Qr0hQW4lmY7vlYFSmZIpUB4NhvS/jA6Xfp/8IqVDY=",
   "Source": "ChatTeams",
   "BasePath": "_content/ChatTeams",
   "Mode": "Default",
@@ -83,6 +83,40 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\favicon.ico"
+    },
+    {
+      "Identity": "C:\\Users\\sdayaratne\\source\\repos\\ChatTeams\\ChatTeams\\wwwroot\\images\\imags.JPG",
+      "SourceId": "ChatTeams",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\sdayaratne\\source\\repos\\ChatTeams\\ChatTeams\\wwwroot\\",
+      "BasePath": "_content/ChatTeams",
+      "RelativePath": "images/imags.JPG",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\imags.JPG"
+    },
+    {
+      "Identity": "C:\\Users\\sdayaratne\\source\\repos\\ChatTeams\\ChatTeams\\wwwroot\\js\\SendMessage.js",
+      "SourceId": "ChatTeams",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\sdayaratne\\source\\repos\\ChatTeams\\ChatTeams\\wwwroot\\",
+      "BasePath": "_content/ChatTeams",
+      "RelativePath": "js/SendMessage.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\SendMessage.js"
     },
     {
       "Identity": "C:\\Users\\sdayaratne\\source\\repos\\ChatTeams\\ChatTeams\\wwwroot\\js\\site.js",

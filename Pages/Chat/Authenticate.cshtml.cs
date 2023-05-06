@@ -28,18 +28,49 @@ namespace ChatTeams.Pages.Chat
         }
 
         public List<MessageInfo> messageList = new List<MessageInfo>();
-
-
+        public string accessToken;
 
 
     public void OnGet()
         {
-            var accessTokenResponse  = Authenticate();
 
-            List<ChatMessageValue> mes = GetMessages(accessTokenResponse);
+            var accessTokenResponse = new AccessTokenResponse();
+
+            string connectionString = "Data Source=SL-SDAYARATNE;Initial Catalog=mystore;Integrated Security=True";
+
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+
+                string sql = "SELECT * FROM OauthCredentials";
+                using (SqlCommand command = new SqlCommand(sql, sqlConnection))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            accessTokenResponse.RefreshToken = reader.GetString(1);
+                            accessTokenResponse.AccessToken = reader.GetString(2);
+
+                        }
+                    }
+
+                }
+            }
+            if(accessTokenResponse.RefreshToken == null)
+            {
+                accessTokenResponse = Authenticate();
+            }
+
+            var newTokenResponse = RefreshAccessToken(accessTokenResponse.RefreshToken);
+
+            StoreTokenResponse(newTokenResponse);
+
+            accessToken = newTokenResponse.AccessToken;
+
+            List<ChatMessageValue> mes = GetMessages(newTokenResponse);
             
             
-
             foreach (var item in mes)
             {
                if(item.From != null)
@@ -103,7 +134,20 @@ namespace ChatTeams.Pages.Chat
             }*/
 
         }
-        public AccessTokenResponse Authenticate()
+
+    public void OnPost()
+    {
+            string message = Request.Form["message"];
+            string sendButton = Request.Form["sendButton"];
+
+            if (!string.IsNullOrEmpty(sendButton))
+            {
+                // Your button click logic here
+            }
+
+
+        }
+    public AccessTokenResponse Authenticate()
         {
             string MicrosoftGraphApiBaseUrl = "https://graph.microsoft.com";
             string MicrosoftLoginBaseUrl = "https://login.microsoftonline.com";
@@ -181,7 +225,73 @@ namespace ChatTeams.Pages.Chat
             
         }
 
-        public List<ChatMessageValue> GetMessages(AccessTokenResponse accessTokenResponse)
+    public AccessTokenResponse RefreshAccessToken(string refershToken)
+    {
+           
+            string MicrosoftGraphApiBaseUrl = "https://graph.microsoft.com";
+            string MicrosoftLoginBaseUrl = "https://login.microsoftonline.com";
+            string TokenEndpoint = "oauth2/v2.0/token";
+            var tenantId = "1b41edc3-3eef-4a0d-b9fe-bb09d452bf85";
+
+            Console.WriteLine("Entered AccessToken");
+            var @params = new Dictionary<string, string>
+            {
+                {"client_id", "f9e599a6-6e85-49f8-9b98-561e6680f264"},
+                {"client_secret", "M-M8Q~RvXA4kAriNjIcCmdmLUi13BYqI8tPKkdlt"},
+                {"grant_type", "refresh_token"},
+                {"scope", $"{MicrosoftGraphApiBaseUrl}/.default offline_access"},
+                {"refresh_token", refershToken}
+            };
+
+            var requestUrl = string.Format($"{MicrosoftLoginBaseUrl}/{tenantId}/{TokenEndpoint}");
+            var accessTokenRequest = (HttpWebRequest)WebRequest.Create(requestUrl);
+            accessTokenRequest.Method = "POST";
+            accessTokenRequest.ContentType = "application/x-www-form-urlencoded;";
+            accessTokenRequest.Accept = "application/json;";
+
+            var postData = @params.Keys.Aggregate("", (current, key) => current + (HttpUtility.UrlEncode(key) + "=" + HttpUtility.UrlEncode(@params[key]) + "&"));
+            var data = Encoding.ASCII.GetBytes(postData);
+
+            var requestStream = accessTokenRequest.GetRequestStream();
+            requestStream.Write(data, 0, data.Length);
+            requestStream.Close();
+
+            string jsonString;
+            var response = (HttpWebResponse)accessTokenRequest.GetResponse();
+            using (var responseStreamReader = new StreamReader(response.GetResponseStream() ?? throw new InvalidOperationException(), true))
+            {
+                jsonString = responseStreamReader.ReadToEnd();
+            }
+            var accessTokenResponse = JsonConvert.DeserializeObject<AccessTokenResponse>(jsonString);
+            return accessTokenResponse;
+        }
+
+    public void StoreTokenResponse(AccessTokenResponse tokenResponse)
+    {
+            string connectionString = "Data Source=SL-SDAYARATNE;Initial Catalog=mystore;Integrated Security=True";
+
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+
+                string sql = "UPDATE OauthCredentials " +
+                                "SET refreshToken = @refreshToken, " +
+                                "    accessToken = @accessToken " +
+                                "WHERE id = @id;";
+                using (SqlCommand command = new SqlCommand(sql, sqlConnection))
+                {
+                    command.Parameters.AddWithValue("@refreshToken", tokenResponse.RefreshToken);
+                    command.Parameters.AddWithValue("@accessToken", tokenResponse.AccessToken);
+                    command.Parameters.AddWithValue("@id", 1);
+
+                    command.ExecuteNonQuery();
+                }
+                        
+            }
+
+        }
+
+    public List<ChatMessageValue> GetMessages(AccessTokenResponse accessTokenResponse)
         {
             Dictionary<string, string> messages = new Dictionary<string, string>();
 
@@ -207,13 +317,13 @@ namespace ChatTeams.Pages.Chat
             return messageObject.Value;
         }
 
-        public class MessageInfo
+    public class MessageInfo
         {
             public string Content { get; set; }
             public string Sender { get; set; }
             // add other relevant properties as needed
         }
-        public class ChatController : Controller
+    public class ChatController : Controller
         {
             [HttpPost]
             public IActionResult SendMessage(AuthenticateModel model)
