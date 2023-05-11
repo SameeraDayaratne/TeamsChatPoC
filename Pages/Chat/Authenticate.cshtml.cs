@@ -31,7 +31,7 @@ namespace ChatTeams.Pages.Chat
         public string accessToken;
 
 
-    public void OnGet()
+        public void OnGet()
         {
 
             var accessTokenResponse = new AccessTokenResponse();
